@@ -85,6 +85,10 @@
         </dependency>
         <dependency>
             <groupId>org.bahmni.module</groupId>
+            <artifactId>communication-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
             <artifactId>bahmni-emr-api</artifactId>
             <version>${project.version}</version>
         </dependency>
