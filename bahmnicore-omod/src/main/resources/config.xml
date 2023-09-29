@@ -146,8 +146,7 @@
     <globalProperty>
         <property>bahmni.relationshipTypeMap</property>
         <defaultValue></defaultValue>
-        <description>Relationship Type Map format Eg:{ "patient": ["Sibling", "Parent"],"provider": ["Doctor"]}.If no
-            value is specified default is patient relationship.
+        <description>Relationship Type Map format Eg:{ "patient": ["Sibling", "Parent"],"provider": ["Doctor"]}.If no value is specified default is patient relationship.
         </description>
     </globalProperty>
 
