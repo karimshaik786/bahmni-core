@@ -8,12 +8,6 @@ public class AllergenRequest {
     private String codedAllergen;
     private String nonCodedAllergen;
 
-    public AllergenRequest(String allergenKind, String codedAllergen, String nonCodedAllergen) {
-        this.allergenKind = allergenKind;
-        this.codedAllergen = codedAllergen;
-        this.nonCodedAllergen = nonCodedAllergen;
-    }
-
     public String getAllergenKind() {
         return allergenKind;
     }

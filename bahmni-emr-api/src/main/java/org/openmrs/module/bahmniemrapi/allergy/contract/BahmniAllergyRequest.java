@@ -11,13 +11,6 @@ public class BahmniAllergyRequest {
     private String severity;
     private String comment;
 
-    public BahmniAllergyRequest(AllergenRequest allergen, List<ReactionRequest> reactions, String severity, String comment) {
-        this.allergen = allergen;
-        this.reactions = reactions;
-        this.severity = severity;
-        this.comment = comment;
-    }
-
     public AllergenRequest getAllergen() {
         return allergen;
     }
