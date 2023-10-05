@@ -7,18 +7,14 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Component
 public class PatientEvent extends BahmniEvent {
 
     private Patient patient;
 
-    public void createPatientEvent(BahmniEventType eventType, Patient patient) {
-        this.eventType = eventType;
+    public PatientEvent(BahmniEventType bahmniEventType, Patient patient) {
+        super(bahmniEventType);
         this.patient = patient;
-        this.eventId = UUID.randomUUID().toString();
-        this.payloadId = patient.getUuid();
-        this.publishedDateTime = LocalDateTime.now();
-        this.userContext= Context.getUserContext();
+        this.payloadId=patient.getUuid();
     }
 
     public Patient getPatient() {

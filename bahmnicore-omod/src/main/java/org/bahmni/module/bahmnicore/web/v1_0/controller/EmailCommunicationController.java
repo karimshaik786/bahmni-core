@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/patient/{patientUuid}/send/")
-public class TransmissionController extends BaseRestController {
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/patient/{patientUuid}/send/")//change to send-prescription-email
+public class EmailCommunicationController extends BaseRestController {
 
     private final Log log = LogFactory.getLog(this.getClass());
 

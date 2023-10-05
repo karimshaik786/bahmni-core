@@ -26,12 +26,10 @@ public class PatientAdvice implements AfterReturningAdvice, MethodBeforeAdvice {
 	private final BahmniEventPublisher eventPublisher;
 	private final ThreadLocal<Map<String,Integer>> threadLocal = new ThreadLocal<>();
 	private final String PATIENT_ID_KEY = "patientId";
-	private final PatientEvent patientEvent;
 	private final Set<String> adviceMethodNames = Sets.newHashSet("savePatient");
 
 	public PatientAdvice() {
 		this.eventPublisher = Context.getRegisteredComponent("bahmniEventPublisher", BahmniEventPublisher.class);
-		this.patientEvent = Context.getRegisteredComponent("patientEvent", PatientEvent.class);
 	}
 
 	@Override
@@ -43,7 +41,7 @@ public class PatientAdvice implements AfterReturningAdvice, MethodBeforeAdvice {
 				threadLocal.remove();
 
 				Patient patient = (Patient) returnValue;
-				patientEvent.createPatientEvent(eventType, patient);
+				PatientEvent patientEvent =new PatientEvent(eventType,patient);
 				eventPublisher.publishEvent(patientEvent);
 
 				log.info("Successfully published event with uuid : " + patient.getUuid());

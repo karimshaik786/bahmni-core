@@ -28,8 +28,8 @@ public class PatientSmsEventListener {
     public void onApplicationEvent(PatientEvent event) {
         try {
             Context.openSession();
-            Context.setUserContext(event.getUserContext());
-            if (event.getEventType() == BahmniEventType.BAHMNI_PATIENT_CREATED) {
+            Context.setUserContext(event.userContext);
+            if (event.eventType == BahmniEventType.BAHMNI_PATIENT_CREATED) {
                 handlePatientCreatedEvent(event.getPatient());
             }
             } catch(Exception e){

@@ -1,11 +1,11 @@
 package org.bahmni.module.bahmnicore.events;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Component
 public class BahmniEvent {
 
     private static final long version = 1L;
@@ -15,21 +15,12 @@ public class BahmniEvent {
     public String payloadId;
     public LocalDateTime publishedDateTime;
 
-    public UserContext getUserContext() {
-        return userContext;
-    }
-    public String getEventId() {
-        return eventId;
-    }
-    public BahmniEventType getEventType() {
-        return eventType;
-    }
-    public String getPayloadId() {
-        return payloadId;
-    }
-
-    public LocalDateTime getPublishedDateTime() {
-        return publishedDateTime;
+    public BahmniEvent(BahmniEventType bahmniEventType) {
+        this.eventType = bahmniEventType;
+        this.eventId = UUID.randomUUID().toString();
+        this.publishedDateTime = LocalDateTime.now();
+        this.userContext= Context.getUserContext();
+        this.payloadId="";
     }
 }
 
