@@ -146,9 +146,7 @@
     <globalProperty>
         <property>bahmni.relationshipTypeMap</property>
         <defaultValue></defaultValue>
-        <description>Relationship Type Map format Eg:{ "patient": ["Sibling", "Parent"],"provider": ["Doctor"]}.If no
-            value is specified default is patient relationship.
-        </description>
+        <description>Relationship Type Map format Eg:{ "patient": ["Sibling", "Parent"],"provider": ["Doctor"]}.If no value is specified default is patient relationship.</description>
     </globalProperty>
 
     <globalProperty>
@@ -190,9 +188,7 @@
     <globalProperty>
         <property>bahmni.diagnosisSetForNewDiagnosisConcepts</property>
         <defaultValue></defaultValue>
-        <description>UUID of set member of diagnosis set of sets. New Diagnosis concepts from terminology server will be
-            added to this set
-        </description>
+        <description>UUID of set member of diagnosis set of sets. New Diagnosis concepts from terminology server will be added to this set </description>
     </globalProperty>
 
     <globalProperty>
