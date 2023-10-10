@@ -2,7 +2,16 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 
 
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.*;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
+import org.openmrs.VisitType;
+import org.openmrs.Concept;
+import org.openmrs.Allergen;
+import org.openmrs.AllergenType;
+import org.openmrs.Allergy;
+import org.openmrs.AllergyReaction;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
@@ -34,7 +43,13 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collections;
 
 @Transactional
 public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService implements BahmniEncounterTransactionService {
