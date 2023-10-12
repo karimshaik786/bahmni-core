@@ -194,7 +194,7 @@
     <globalProperty>
         <property>sms.enableRegistrationSMSAlert</property>
         <defaultValue>false</defaultValue>
-        <description>Boolean to enable sending sms when ptient registers</description>
+        <description>Boolean to enable sending sms when patient registers</description>
     </globalProperty>
 
 
