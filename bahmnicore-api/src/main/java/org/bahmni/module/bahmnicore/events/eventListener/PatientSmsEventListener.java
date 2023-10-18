@@ -55,7 +55,6 @@ public class PatientSmsEventListener {
 
     public Map<String, String> createArgumentsMapForPatientRegistration(Patient patient) {
         String helpdeskNumber = Context.getAdministrationService().getGlobalPropertyObject("clinic.helpDeskNumber").getPropertyValue();
-        String clinicTime = Context.getAdministrationService().getGlobalPropertyObject("clinic.clinicTimings").getPropertyValue();
         Map<String, String> arguments = new HashMap<>();
         arguments.put("location", Context.getUserContext().getLocation().getName());
         arguments.put("identifier", patient.getPatientIdentifier().getIdentifier());
@@ -63,7 +62,6 @@ public class PatientSmsEventListener {
         arguments.put("gender", patient.getGender());
         arguments.put("age", patient.getAge().toString());
         arguments.put("helpdesknumber", helpdeskNumber);
-        arguments.put("facilitytimings", clinicTime);
         return arguments;
     }
 
