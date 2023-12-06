@@ -4571,4 +4571,19 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-20231206-bah-3336" author="Arjun">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM program_attribute_type where name = 'Stage' AND datatype =
+                'org.bahmni.module.bahmnicore.customdatatype.datatype.CodedConceptDatatype';
+            </sqlCheck>
+        </preConditions>
+        <comment>Update datatype of patient stage program attribute type</comment>
+        <sql>
+            UPDATE program_attribute_type
+            SET datatype = 'org.openmrs.customdatatype.datatype.ConceptDatatype'
+            WHERE name = 'Stage';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
