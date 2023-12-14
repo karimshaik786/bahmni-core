@@ -4580,9 +4580,8 @@
         </preConditions>
         <comment>Update datatype of patient stage program attribute type</comment>
         <sql>
-            UPDATE program_attribute_type
-            SET datatype = 'org.openmrs.customdatatype.datatype.ConceptDatatype'
-            WHERE name = 'Stage';
+            UPDATE program_attribute_type SET datatype = 'org.openmrs.customdatatype.datatype.ConceptDatatype' WHERE
+            name = 'Stage' AND datatype = 'org.bahmni.module.bahmnicore.customdatatype.datatype.CodedConceptDatatype';
         </sql>
     </changeSet>
 
