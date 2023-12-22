@@ -2,7 +2,13 @@ package org.bahmni.module.bahmnicore.web.v1_0.search;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
+import org.openmrs.Visit;
+import org.openmrs.ConceptSearchResult;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.episodes.Episode;
@@ -57,9 +63,14 @@ public class VisitFormsSearchHandler implements SearchHandler {
         }
         List<String> conceptNamesList = new ArrayList<>();
         if (conceptNames == null) {
-            conceptNamesList = getConcepts(getConceptsByNameAndLocale(ALL_OBSERVATION_TEMPLATES,searchLocale));
+            List<Concept> concepts = getConceptsByNameAndLocale(ALL_OBSERVATION_TEMPLATES,searchLocale);
+            if(!concepts.isEmpty()){
+                for (Concept concept : concepts) {
+                    conceptNamesList = getConcepts(concept.getSetMembers());
+                }
+            }
         } else {
-            conceptNamesList = Arrays.asList(conceptNames);
+            conceptNamesList = asList(conceptNames);
         }
 
         List<Encounter> encounterList;
