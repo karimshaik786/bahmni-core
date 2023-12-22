@@ -2,12 +2,8 @@ package org.bahmni.module.bahmnicore.web.v1_0.search;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
-import org.openmrs.Visit;
+import org.openmrs.*;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.episodes.Episode;
 import org.openmrs.module.episodes.service.EpisodeService;
@@ -28,6 +24,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import org.openmrs.util.LocaleUtility;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -35,7 +33,6 @@ import static java.util.Arrays.asList;
 public class VisitFormsSearchHandler implements SearchHandler {
     @Autowired
     private EpisodeService episodeService;
-
     private final String ALL_OBSERVATION_TEMPLATES = "All Observation Templates";
     private final String QUERY_INFORMATION = "Allows you to search All Observation Templates by patientUuid";
 
@@ -52,6 +49,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
         String patientProgramUuid = context.getRequest().getParameter("patientProgramUuid");
         int numberOfVisits = Integer.parseInt(context.getRequest().getParameter("numberOfVisits"));
         String[] conceptNames = context.getRequest().getParameterValues("conceptNames");
+        Locale searchLocale = getLocale(context.getRequest().getSession().getAttribute("locale").toString());
 
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
         if (patient == null) {
@@ -59,7 +57,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
         }
         List<String> conceptNamesList = new ArrayList<>();
         if (conceptNames == null) {
-            conceptNamesList = getConcepts(Context.getConceptService().getConcept(ALL_OBSERVATION_TEMPLATES).getSetMembers());
+            conceptNamesList = getConcepts(getConceptsByNameAndLocale(ALL_OBSERVATION_TEMPLATES,searchLocale));
         } else {
             conceptNamesList = Arrays.asList(conceptNames);
         }
@@ -74,6 +72,27 @@ public class VisitFormsSearchHandler implements SearchHandler {
         List<Obs> finalObsList = getObservations(patient, conceptNamesList, encounterList);
 
         return new NeedsPaging<Obs>(finalObsList, context);
+    }
+    private List<Concept> getConceptsByNameAndLocale(String conceptName, Locale searchLocale) {
+        if (conceptName != null) {
+            List<Locale> localeList = Collections.singletonList(searchLocale);
+            List<ConceptSearchResult> conceptsSearchResult = Context.getConceptService().getConcepts(conceptName, localeList, false, null, null, null, null, null, 0, null);
+
+            return conceptsSearchResult.stream().map(ConceptSearchResult::getConcept).collect(Collectors.toList());
+        }
+        return new ArrayList<Concept>();
+    }
+
+    private Locale getLocale(String locale) {
+        if (locale != null && !locale.isEmpty()) {
+            Locale searchLocale = LocaleUtility.fromSpecification(locale);
+            if (searchLocale.getLanguage().isEmpty()) {
+                throw new APIException("Invalid locale: " + locale);
+            }
+            return searchLocale;
+        } else {
+            return LocaleUtility.getDefaultLocale();
+        }
     }
 
     private List<Obs> getObservations(Patient patient, List<String> conceptNames, List<Encounter> encounterList) {
