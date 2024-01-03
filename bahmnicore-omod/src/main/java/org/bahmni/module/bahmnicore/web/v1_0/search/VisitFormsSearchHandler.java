@@ -8,7 +8,6 @@ import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Visit;
-import org.openmrs.ConceptSearchResult;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.episodes.Episode;
@@ -22,16 +21,14 @@ import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.LocaleUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import org.openmrs.util.LocaleUtility;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -63,7 +60,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
         }
         List<String> conceptNamesList = new ArrayList<>();
         if (conceptNames == null) {
-            List<Concept> concepts = getConceptsByNameAndLocale(ALL_OBSERVATION_TEMPLATES,searchLocale);
+            List<Concept> concepts = Context.getConceptService().getConceptsByName(ALL_OBSERVATION_TEMPLATES, searchLocale, null);
             if(!concepts.isEmpty()){
                 for (Concept concept : concepts) {
                     conceptNamesList = getConcepts(concept.getSetMembers());
@@ -83,15 +80,6 @@ public class VisitFormsSearchHandler implements SearchHandler {
         List<Obs> finalObsList = getObservations(patient, conceptNamesList, encounterList);
 
         return new NeedsPaging<Obs>(finalObsList, context);
-    }
-    private List<Concept> getConceptsByNameAndLocale(String conceptName, Locale searchLocale) {
-        if (conceptName != null) {
-            List<Locale> localeList = Collections.singletonList(searchLocale);
-            List<ConceptSearchResult> conceptsSearchResult = Context.getConceptService().getConcepts(conceptName, localeList, false, null, null, null, null, null, 0, null);
-
-            return conceptsSearchResult.stream().map(ConceptSearchResult::getConcept).collect(Collectors.toList());
-        }
-        return new ArrayList<Concept>();
     }
 
     private Locale getLocale(String locale) {
