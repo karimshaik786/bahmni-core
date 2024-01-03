@@ -38,6 +38,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
     private EpisodeService episodeService;
     private final String ALL_OBSERVATION_TEMPLATES = "All Observation Templates";
     private final String QUERY_INFORMATION = "Allows you to search All Observation Templates by patientUuid";
+    Locale searchLocale =  null;
 
     @Override
     public SearchConfig getSearchConfig() {
@@ -52,7 +53,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
         String patientProgramUuid = context.getRequest().getParameter("patientProgramUuid");
         int numberOfVisits = Integer.parseInt(context.getRequest().getParameter("numberOfVisits"));
         String[] conceptNames = context.getRequest().getParameterValues("conceptNames");
-        Locale searchLocale = getLocale(context.getRequest().getSession().getAttribute("locale").toString());
+        searchLocale = getLocale(context.getRequest().getSession().getAttribute("locale").toString());
 
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
         if (patient == null) {
@@ -77,7 +78,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
             encounterList = getEncountersFor(numberOfVisits, patient);
         }
 
-        List<Obs> finalObsList = getObservations(patient, conceptNamesList, encounterList);
+        List<Obs> finalObsList = getObservations(patient, conceptNamesList, encounterList, searchLocale);
 
         return new NeedsPaging<Obs>(finalObsList, context);
     }
@@ -94,7 +95,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
         }
     }
 
-    private List<Obs> getObservations(Patient patient, List<String> conceptNames, List<Encounter> encounterList) {
+    private List<Obs> getObservations(Patient patient, List<String> conceptNames, List<Encounter> encounterList, Locale searchLocale) {
         List<Obs> finalObsList = new ArrayList<>();
         if (CollectionUtils.isEmpty(encounterList)) {
             return finalObsList;
@@ -104,8 +105,8 @@ public class VisitFormsSearchHandler implements SearchHandler {
 
         for (Obs obs : initialObsList) {
             String name = null;
-            if(obs.getConcept()!= null && obs.getConcept().getFullySpecifiedName(Locale.ENGLISH) != null){
-                name = obs.getConcept().getFullySpecifiedName(Locale.ENGLISH).getName();
+            if(obs.getConcept()!= null && obs.getConcept().getFullySpecifiedName(searchLocale) != null){
+                name = obs.getConcept().getFullySpecifiedName(searchLocale).getName();
             }
             if (conceptNames.contains(name)) {
                 finalObsList.add(obs);
@@ -137,7 +138,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
             return conceptNames;
 
         for (Concept concept : concepts) {
-            conceptNames.add(concept.getFullySpecifiedName(Locale.ENGLISH).getName());
+            conceptNames.add(concept.getFullySpecifiedName(searchLocale).getName());
         }
 
         return conceptNames;
