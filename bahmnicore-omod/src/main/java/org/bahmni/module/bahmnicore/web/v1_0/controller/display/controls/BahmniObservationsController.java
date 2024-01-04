@@ -6,6 +6,7 @@ import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
 import org.bahmni.module.bahmnicore.obs.ObservationsAdder;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.util.MiscUtils;
+import org.bahmni.module.bahmnicore.web.v1_0.LocaleResolver;
 import org.openmrs.Concept;
 import org.openmrs.ConceptSearchResult;
 import org.openmrs.Visit;
@@ -45,6 +46,7 @@ public class BahmniObservationsController extends BaseRestController {
     private ConceptService conceptService;
     private VisitService visitService;
     private BahmniExtensions bahmniExtensions;
+    private LocaleResolver localeResolver;
 
     @Autowired
     public BahmniObservationsController(BahmniObsService bahmniObsService, ConceptService conceptService, VisitService visitService, BahmniExtensions bahmniExtensions) {
@@ -64,7 +66,7 @@ public class BahmniObservationsController extends BaseRestController {
                                              @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
                                              @RequestParam(value = "filterObsWithOrders", required = false, defaultValue = "true") Boolean filterObsWithOrders ) throws ParseException {
 
-        List<Concept> conceptList = searchConceptsByName(rootConceptNames, identifyLocale(locale));
+        List<Concept> conceptList = searchConceptsByName(rootConceptNames, localeResolver.identifyLocale(locale));
         Collection<BahmniObservation> observations;
         if (ObjectUtils.equals(scope, LATEST)) {
             observations = bahmniObsService.getLatest(patientUUID, conceptList, numberOfVisits, obsIgnoreList, filterObsWithOrders, null);
@@ -90,18 +92,6 @@ public class BahmniObservationsController extends BaseRestController {
             }
         }
         return new ArrayList<>(conceptSet);
-    }
-
-    private Locale identifyLocale(String locale) {
-        if (locale != null && !locale.isEmpty()) {
-            Locale searchLocale = LocaleUtility.fromSpecification(locale);
-            if (searchLocale.getLanguage().isEmpty()) {
-                throw new APIException("Invalid locale: " + locale);
-            }
-            return searchLocale;
-        } else {
-            return LocaleUtility.getDefaultLocale();
-        }
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"visitUuid"})

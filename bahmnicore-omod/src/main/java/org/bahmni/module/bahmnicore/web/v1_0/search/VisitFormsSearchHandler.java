@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.search;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
+import org.bahmni.module.bahmnicore.web.v1_0.LocaleResolver;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -36,6 +37,7 @@ import static java.util.Arrays.asList;
 public class VisitFormsSearchHandler implements SearchHandler {
     @Autowired
     private EpisodeService episodeService;
+    private LocaleResolver localeResolver;
     private final String ALL_OBSERVATION_TEMPLATES = "All Observation Templates";
     private final String QUERY_INFORMATION = "Allows you to search All Observation Templates by patientUuid";
 
@@ -52,7 +54,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
         String patientProgramUuid = context.getRequest().getParameter("patientProgramUuid");
         int numberOfVisits = Integer.parseInt(context.getRequest().getParameter("numberOfVisits"));
         String[] conceptNames = context.getRequest().getParameterValues("conceptNames");
-        Locale searchLocale = getLocale(context.getRequest().getSession().getAttribute("locale").toString());
+        Locale searchLocale = localeResolver.identifyLocale(context.getRequest().getSession().getAttribute("locale").toString());
 
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
         if (patient == null) {
@@ -78,20 +80,9 @@ public class VisitFormsSearchHandler implements SearchHandler {
         }
 
         List<Obs> finalObsList = getObservations(patient, conceptNamesList, encounterList, searchLocale);
+        System.out.println("finalObsList = " + finalObsList);
 
         return new NeedsPaging<Obs>(finalObsList, context);
-    }
-
-    private Locale getLocale(String locale) {
-        if (locale != null && !locale.isEmpty()) {
-            Locale searchLocale = LocaleUtility.fromSpecification(locale);
-            if (searchLocale.getLanguage().isEmpty()) {
-                throw new APIException("Invalid locale: " + locale);
-            }
-            return searchLocale;
-        } else {
-            return LocaleUtility.getDefaultLocale();
-        }
     }
 
     private List<Obs> getObservations(Patient patient, List<String> conceptNames, List<Encounter> encounterList, Locale searchLocale) {
