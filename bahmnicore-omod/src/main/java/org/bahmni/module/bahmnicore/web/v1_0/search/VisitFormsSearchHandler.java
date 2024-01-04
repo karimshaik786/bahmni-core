@@ -61,7 +61,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
         }
         List<String> conceptNamesList = new ArrayList<>();
         if (conceptNames == null) {
-            List<Concept> concepts = Context.getConceptService().getConceptsByName(ALL_OBSERVATION_TEMPLATES, searchLocale, null);
+            List<Concept> concepts = Context.getConceptService().getConceptsByName(ALL_OBSERVATION_TEMPLATES, Locale.ENGLISH, null);
             if(!concepts.isEmpty()){
                 for (Concept concept : concepts) {
                     conceptNamesList = getConcepts(concept.getSetMembers());
@@ -136,11 +136,12 @@ public class VisitFormsSearchHandler implements SearchHandler {
         List<String> conceptNames = new ArrayList<>();
         if (concepts == null)
             return conceptNames;
-
         for (Concept concept : concepts) {
-            conceptNames.add(concept.getFullySpecifiedName(searchLocale).getName());
+            if(concept.getFullySpecifiedName(searchLocale) != null)
+                conceptNames.add(concept.getFullySpecifiedName(searchLocale).getName());
+            else
+                conceptNames.add(concept.getFullySpecifiedName(LocaleUtility.getDefaultLocale()).getName());
         }
-
         return conceptNames;
     }
 
