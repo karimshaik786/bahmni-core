@@ -91,11 +91,7 @@ public class VisitFormsSearchHandlerTest {
     }
 
     public Concept createConcept(String conceptName, String locale) {
-        ConceptName conceptNam = new ConceptName();
-        conceptNam.setName(conceptName);
-        conceptNam.setLocale(new Locale(locale));
         concept = new Concept();
-        concept.addName(conceptNam);
         concept.setFullySpecifiedName(new ConceptName(conceptName, new Locale(locale)));
         return concept;
     }
@@ -115,7 +111,7 @@ public class VisitFormsSearchHandlerTest {
         when(context.getRequest().getSession()).thenReturn(session);
         when(context.getRequest().getParameter("patient")).thenReturn("patientUuid");
         when(context.getRequest().getParameter("numberOfVisits")).thenReturn("10");
-        when(context.getRequest().getSession().getAttribute("locale")).thenReturn(new Locale("en"));
+        when(context.getRequest().getSession().getAttribute("locale")).thenReturn(locale);
 
         String[] conceptNames = {"Vitals"};
         when(context.getRequest().getParameterValues("conceptNames")).thenReturn(conceptNames);
@@ -177,7 +173,7 @@ public class VisitFormsSearchHandlerTest {
         parentConcept.addSetMember(historyConcept);
         conceptList.add(parentConcept);
 
-        when(Context.getConceptService().getConceptsByName("All Observation Templates", new Locale("en"),  null)).thenReturn(conceptList);
+        when(Context.getConceptService().getConceptsByName("All Observation Templates", locale,  null)).thenReturn(conceptList);
 
         Obs obs2 = createObs(historyConcept);
 
@@ -242,7 +238,7 @@ public class VisitFormsSearchHandlerTest {
     }
 
     @Test
-    public void shouldNotFetchAnyObservationsIfThereIsNoEpisodeForTheProgram() throws Exception {
+    public void shouldNotFetchAnyObservationsIfThereIsNoEpisodeForTheProgram() {
         when(context.getRequest().getParameterValues("conceptNames")).thenReturn(null);
         when(Context.getConceptService().getConceptsByName("conceptNames", locale,  null)).thenReturn(concepts);
         String patientProgramUuid = "patient-program-uuid";
