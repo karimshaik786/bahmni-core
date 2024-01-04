@@ -38,7 +38,6 @@ public class VisitFormsSearchHandler implements SearchHandler {
     private EpisodeService episodeService;
     private final String ALL_OBSERVATION_TEMPLATES = "All Observation Templates";
     private final String QUERY_INFORMATION = "Allows you to search All Observation Templates by patientUuid";
-    Locale searchLocale =  null;
 
     @Override
     public SearchConfig getSearchConfig() {
@@ -53,7 +52,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
         String patientProgramUuid = context.getRequest().getParameter("patientProgramUuid");
         int numberOfVisits = Integer.parseInt(context.getRequest().getParameter("numberOfVisits"));
         String[] conceptNames = context.getRequest().getParameterValues("conceptNames");
-        searchLocale = getLocale(context.getRequest().getSession().getAttribute("locale").toString());
+        Locale searchLocale = getLocale(context.getRequest().getSession().getAttribute("locale").toString());
 
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
         if (patient == null) {
@@ -64,7 +63,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
             List<Concept> concepts = Context.getConceptService().getConceptsByName(ALL_OBSERVATION_TEMPLATES, searchLocale, null);
             if(!concepts.isEmpty()){
                 for (Concept concept : concepts) {
-                    conceptNamesList = getConcepts(concept.getSetMembers());
+                    conceptNamesList = getConcepts(concept.getSetMembers(), searchLocale);
                 }
             }
         } else {
@@ -132,7 +131,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
         return encounterList;
     }
 
-    private List<String> getConcepts(List<Concept> concepts) {
+    private List<String> getConcepts(List<Concept> concepts, Locale searchLocale) {
         List<String> conceptNames = new ArrayList<>();
         if (concepts == null)
             return conceptNames;
