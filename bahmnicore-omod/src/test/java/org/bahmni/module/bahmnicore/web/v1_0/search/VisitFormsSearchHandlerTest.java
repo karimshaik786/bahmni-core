@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.search;
 
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
+import org.bahmni.module.bahmnicore.web.v1_0.LocaleResolver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,6 +76,8 @@ public class VisitFormsSearchHandlerTest {
     private BahmniProgramWorkflowService programWorkflowService;
     @Mock
     private EpisodeService episodeService;
+    @Mock
+    private LocaleResolver localeResolver;
 
     private Patient patient;
     Locale locale = new Locale("en");
@@ -124,6 +127,8 @@ public class VisitFormsSearchHandlerTest {
         when(patientService.getPatientByUuid("patientUuid")).thenReturn(patient);
         PowerMockito.when(Context.getConceptService()).thenReturn(conceptService);
         concept = createConcept("Vitals", "en");
+
+        PowerMockito.when(localeResolver.identifyLocale(any())).thenReturn(locale);
 
         Visit visit = new Visit();
         PowerMockito.when(Context.getVisitService()).thenReturn(visitService);
