@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0;
 
+import static org.bahmni.module.bahmnicore.web.v1_0.LocaleResolver.identifyLocale;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -12,29 +13,25 @@ public class LocaleResolverTest {
 
     @Test
     public void shouldReturnDefaultLocaleIfNull() {
-        LocaleResolver resolver = new LocaleResolver();
-        Locale locale = resolver.identifyLocale(null);
+        Locale locale = identifyLocale(null);
         assertEquals(LocaleUtility.getDefaultLocale(), locale);
     }
 
     @Test
     public void shouldReturnDefaultLocaleIfEmpty() {
-        LocaleResolver resolver = new LocaleResolver();
-        Locale locale = resolver.identifyLocale("");
+        Locale locale = identifyLocale("");
         assertEquals(LocaleUtility.getDefaultLocale(), locale);
     }
 
     @Test
     public void shouldReturnParsedLocaleIfValid() {
-        LocaleResolver resolver = new LocaleResolver();
-        Locale locale = resolver.identifyLocale("en_US");
+        Locale locale = identifyLocale("en_US");
         assertEquals(new Locale("en", "US"), locale);
     }
 
     @Test(expected = AssertionError.class)
     public void shouldThrowExceptionIfInvalidLocale() {
-        LocaleResolver resolver = new LocaleResolver();
-        resolver.identifyLocale("invalid");
+        identifyLocale("invalid");
         fail("Should have thrown exception");
     }
 

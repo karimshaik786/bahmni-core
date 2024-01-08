@@ -36,6 +36,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.bahmni.module.bahmnicore.web.v1_0.LocaleResolver.identifyLocale;
+
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/observations")
 public class BahmniObservationsController extends BaseRestController {
@@ -46,7 +48,6 @@ public class BahmniObservationsController extends BaseRestController {
     private ConceptService conceptService;
     private VisitService visitService;
     private BahmniExtensions bahmniExtensions;
-    private LocaleResolver localeResolver;
 
     @Autowired
     public BahmniObservationsController(BahmniObsService bahmniObsService, ConceptService conceptService, VisitService visitService, BahmniExtensions bahmniExtensions) {
@@ -66,7 +67,7 @@ public class BahmniObservationsController extends BaseRestController {
                                              @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
                                              @RequestParam(value = "filterObsWithOrders", required = false, defaultValue = "true") Boolean filterObsWithOrders ) throws ParseException {
 
-        List<Concept> conceptList = searchConceptsByName(rootConceptNames, localeResolver.identifyLocale(locale));
+        List<Concept> conceptList = searchConceptsByName(rootConceptNames, identifyLocale(locale));
         Collection<BahmniObservation> observations;
         if (ObjectUtils.equals(scope, LATEST)) {
             observations = bahmniObsService.getLatest(patientUUID, conceptList, numberOfVisits, obsIgnoreList, filterObsWithOrders, null);

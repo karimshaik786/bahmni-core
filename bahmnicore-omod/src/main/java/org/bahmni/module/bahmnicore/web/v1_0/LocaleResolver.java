@@ -7,7 +7,7 @@ import java.util.Locale;
 
 public class LocaleResolver {
 
-    public Locale identifyLocale(String locale) {
+    public static Locale identifyLocale(String locale) {
         if (locale != null && !locale.isEmpty()) {
             Locale searchLocale = LocaleUtility.fromSpecification(locale);
             if (searchLocale.getLanguage().isEmpty()) {

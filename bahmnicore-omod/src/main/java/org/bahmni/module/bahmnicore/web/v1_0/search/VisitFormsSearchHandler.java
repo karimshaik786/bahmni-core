@@ -32,12 +32,12 @@ import java.util.List;
 import java.util.Locale;
 
 import static java.util.Arrays.asList;
+import static org.bahmni.module.bahmnicore.web.v1_0.LocaleResolver.identifyLocale;
 
 @Component
 public class VisitFormsSearchHandler implements SearchHandler {
     @Autowired
     private EpisodeService episodeService;
-    private LocaleResolver localeResolver;
     private final String ALL_OBSERVATION_TEMPLATES = "All Observation Templates";
     private final String QUERY_INFORMATION = "Allows you to search All Observation Templates by patientUuid";
 
@@ -54,7 +54,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
         String patientProgramUuid = context.getRequest().getParameter("patientProgramUuid");
         int numberOfVisits = Integer.parseInt(context.getRequest().getParameter("numberOfVisits"));
         String[] conceptNames = context.getRequest().getParameterValues("conceptNames");
-        Locale searchLocale = localeResolver.identifyLocale(context.getRequest().getSession().getAttribute("locale").toString());
+        Locale searchLocale = identifyLocale(context.getRequest().getSession().getAttribute("locale").toString());
 
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
         if (patient == null) {
@@ -80,7 +80,6 @@ public class VisitFormsSearchHandler implements SearchHandler {
         }
 
         List<Obs> finalObsList = getObservations(patient, conceptNamesList, encounterList, searchLocale);
-        System.out.println("finalObsList = " + finalObsList);
 
         return new NeedsPaging<Obs>(finalObsList, context);
     }
