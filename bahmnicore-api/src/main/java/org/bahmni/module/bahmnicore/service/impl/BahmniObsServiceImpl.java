@@ -18,8 +18,10 @@ import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.VisitService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahmniObsMapper;
+import org.openmrs.util.LocaleUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,9 +71,18 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     private List<String> getConceptNames(Collection<Concept> concepts) {
         List<String> conceptNames = new ArrayList<>();
         for (Concept concept : concepts) {
-            conceptNames.add(concept.getName().getName());
+            if(concept != null) {
+                conceptNames.add(getConceptName(concept, Context.getLocale()));
+            }
         }
         return conceptNames;
+    }
+
+    private String getConceptName(Concept concept, Locale searchLocale) {
+        if (concept.getName(searchLocale) != null)
+            return concept.getName(searchLocale).getName();
+        else
+            return concept.getName(LocaleUtility.getDefaultLocale()).getName();
     }
 
     @Override
