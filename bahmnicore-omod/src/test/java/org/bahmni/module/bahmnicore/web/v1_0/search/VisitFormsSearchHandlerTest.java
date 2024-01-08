@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static org.bahmni.module.bahmnicore.web.v1_0.LocaleResolver.identifyLocale;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -56,7 +57,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@PrepareForTest({Context.class, LocaleUtility.class})
+@PrepareForTest({Context.class, LocaleUtility.class, LocaleResolver.class})
 @RunWith(PowerMockRunner.class)
 public class VisitFormsSearchHandlerTest {
 
@@ -78,9 +79,6 @@ public class VisitFormsSearchHandlerTest {
     private BahmniProgramWorkflowService programWorkflowService;
     @Mock
     private EpisodeService episodeService;
-    @Mock
-    private LocaleResolver localeResolver;
-
     private Patient patient;
     private Concept concept;
     private Obs obs;
@@ -92,6 +90,7 @@ public class VisitFormsSearchHandlerTest {
     public void before() throws Exception {
         initMocks(this);
         mockStatic(LocaleUtility.class);
+        mockStatic(LocaleResolver.class);
         setUp();
     }
 
@@ -117,6 +116,7 @@ public class VisitFormsSearchHandlerTest {
         when(context.getRequest().getParameter("patient")).thenReturn("patientUuid");
         when(context.getRequest().getParameter("numberOfVisits")).thenReturn("10");
         when(context.getRequest().getSession().getAttribute("locale")).thenReturn(Locale.ENGLISH);
+        when(identifyLocale(any())).thenReturn(Locale.ENGLISH);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
 
         String[] conceptNames = {"Vitals"};
@@ -131,7 +131,7 @@ public class VisitFormsSearchHandlerTest {
         PowerMockito.when(Context.getConceptService()).thenReturn(conceptService);
         concept = createConcept("Vitals", "en");
 
-        PowerMockito.when(localeResolver.identifyLocale(any())).thenReturn(Locale.ENGLISH);
+        PowerMockito.when(identifyLocale(any())).thenReturn(Locale.ENGLISH);
 
         Visit visit = new Visit();
         PowerMockito.when(Context.getVisitService()).thenReturn(visitService);
@@ -170,7 +170,7 @@ public class VisitFormsSearchHandlerTest {
 
     @Test
     public void shouldReturnConceptSpecificObsIfConceptNameIsFoundInUserLocale() {
-        PowerMockito.when(localeResolver.identifyLocale(any())).thenReturn(Locale.FRENCH);
+        PowerMockito.when(identifyLocale(any())).thenReturn(Locale.FRENCH);
 
         String [] conceptNames = new String[]{"Vitals_fr"};
         when(context.getRequest().getParameterValues("conceptNames")).thenReturn(conceptNames);
@@ -185,7 +185,7 @@ public class VisitFormsSearchHandlerTest {
 
     @Test
     public void shouldReturnConceptSpecificObsIfConceptNameIsNullInUserLocaleButFoundInDefaultSearch() {
-        PowerMockito.when(localeResolver.identifyLocale(any())).thenReturn(Locale.FRENCH);
+        PowerMockito.when(identifyLocale(any())).thenReturn(Locale.FRENCH);
 
         String [] conceptNames = new String[]{"Vitals"};
         when(context.getRequest().getParameterValues("conceptNames")).thenReturn(conceptNames);
@@ -200,7 +200,7 @@ public class VisitFormsSearchHandlerTest {
 
     @Test
     public void shouldReturnConceptSpecificObsIfConceptNameIsFoundInDefaultLocale() {
-        PowerMockito.when(localeResolver.identifyLocale(any())).thenReturn(Locale.FRENCH);
+        PowerMockito.when(identifyLocale(any())).thenReturn(Locale.FRENCH);
 
         when(context.getRequest().getParameterValues("conceptNames")).thenReturn(null);
 
