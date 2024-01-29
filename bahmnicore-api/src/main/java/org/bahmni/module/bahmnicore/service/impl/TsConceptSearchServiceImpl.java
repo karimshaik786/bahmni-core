@@ -50,6 +50,10 @@ public class TsConceptSearchServiceImpl implements TsConceptSearchService {
         Locale searchLocale = getSearchLocale(locale);
         List<ConceptSearchResult> conceptSearchResults =
                 emrConceptService.conceptSearch(query, LocaleUtility.getDefaultLocale(), null, diagnosisSets, conceptSources, limit);
+        if(!LocaleUtility.getDefaultLocale().equals(searchLocale)) {
+            conceptSearchResults.addAll(emrConceptService.conceptSearch(query, searchLocale, null, diagnosisSets, conceptSources, limit));
+        }
+
         ConceptSource conceptSource = conceptSources.isEmpty() ? null : conceptSources.get(0);
         return createListResponse(conceptSearchResults, conceptSource, searchLocale);
     }
