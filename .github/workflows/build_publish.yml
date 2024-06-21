@@ -30,7 +30,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Install Ruby
-        uses: ruby/setup-ruby@v2
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.7'
           bundler-cache: true
