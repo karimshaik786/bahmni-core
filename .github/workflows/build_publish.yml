@@ -41,22 +41,22 @@ jobs:
       - name: Build with Maven
         run: ./mvnw --no-transfer-progress clean -U package -DskipTests
       - name: Create GitHub release
-          id: create_release
-          uses: actions/create-release@v1
-          env:
+        id: create_release
+        uses: actions/create-release@v1
+        env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
+        with:
             tag_name: ${{ github.ref }}
             release_name: Release ${{ github.ref }}
             draft: false
             prerelease: false
 
       - name: Upload SNAPSHOT.omod to release
-              uses: actions/upload-release-asset@v1
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                upload_url: ${{ steps.create_release.outputs.upload_url }}
-                asset_path: ./target/bahmnicore-omod-VERSION-SNAPSHOT.omod
-                asset_name: bahmnicore-omod-VERSION-SNAPSHOT.omodd
-                asset_content_type: application/octet-stream
+        uses: actions/upload-release-asset@v1
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+            upload_url: ${{ steps.create_release.outputs.upload_url }}
+            asset_path: ./target/bahmnicore-omod-VERSION-SNAPSHOT.omod
+            asset_name: bahmnicore-omod-VERSION-SNAPSHOT.omodd
+            asset_content_type: application/octet-stream
