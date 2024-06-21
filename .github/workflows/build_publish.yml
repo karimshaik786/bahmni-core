@@ -1,7 +1,7 @@
 name: Build and Publish package
 on:
   push:
-    branches: [ Bahmni-IPD-master ]
+    branches: [ githubreleaseworkflow ]
   workflow_dispatch:
 
 jobs:
@@ -57,6 +57,6 @@ jobs:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                 upload_url: ${{ steps.create_release.outputs.upload_url }}
-                asset_path: ./target/SNAPSHOT.omod
-                asset_name: SNAPSHOT.omod
+                asset_path: ./target/bahmnicore-omod-VERSION-SNAPSHOT.omod
+                asset_name: bahmnicore-omod-VERSION-SNAPSHOT.omodd
                 asset_content_type: application/octet-stream
